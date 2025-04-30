@@ -4,7 +4,7 @@ from data import n_jobs, jobs
 from utils import calculate_heuristic, total_weighted_tardiness
 
 class ACO:
-    def __init__(self, n_ants=10, iterations=50, alpha=1, beta=3, q0=0.9, evaporation=0.1):
+    def __init__(self, n_ants=20, iterations=100, beta=3, q0=0.9, evaporation=0.1):
         self.n_ants = n_ants
         self.iterations = iterations
         self.beta = beta
