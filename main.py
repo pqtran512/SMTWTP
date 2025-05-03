@@ -6,7 +6,7 @@ from data import n_jobs, jobs
 bestTWT = []
 
 for enable_ls in [False, True]:
-    aco = ACO(n_ants=50, iterations=50, beta=3, q0=0.9, rho=0.3)
+    aco = ACO(n_ants=50, iterations=50, beta=3, q0=0.9, rho=0.1)
     if enable_ls:
         with_ls = "ACO with Local Seach - "
     else:
