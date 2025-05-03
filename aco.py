@@ -60,5 +60,7 @@ class ACO:
             for pos, job in enumerate(sol):
                 self.pheromone[pos][job] += 1.0 / cost
 
-        # Apply pheromone bounds
+        # dynamic pheromone bounds
+        self.tau_max = 1.0 / ((1 - self.evaporation) * self.best_global_cost)
         self.pheromone = np.clip(self.pheromone, self.tau_min, self.tau_max)
+        print(self.pheromone)
