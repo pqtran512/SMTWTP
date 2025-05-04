@@ -1,11 +1,12 @@
 # SMTWTP - Bài toán lập lịch với tổng trọng số thời gian trễ
 
 ## Giới thiệu bài toán
-SMTWTP (Single Machine Total Weighted Tardiness Problem) là bài toán lập lịch cho một máy đơn với mục tiêu tối thiểu hóa tổng trọng số thời gian trễ. Trong bài toán này:- Có n công việc cần được xử lý trên một máy
-- Mỗi công việc j có:  
-    - Thời gian xử lý pj
-    - Hạn chót dj  
-    - Trọng số wj
+SMTWTP (Single Machine Total Weighted Tardiness Problem) là bài toán lập lịch cho một máy đơn với mục tiêu tối thiểu hóa tổng trọng số thời gian trễ. Trong bài toán này:
+- Có n công việc cần được xử lý trên một máy
+    - Mỗi công việc j có:  
+        - Thời gian xử lý pj
+        - Hạn chót dj  
+        - Trọng số wj
 - Mục tiêu: Tìm thứ tự xử lý các công việc để tối thiểu hóa tổng trọng số thời gian trễ
 
 ## Cấu trúc dự án
@@ -22,19 +23,28 @@ SMTWTP (Single Machine Total Weighted Tardiness Problem) là bài toán lập l�
 - `plot_heatmap.py`: Vẽ bản đồ nhiệt để phân tích ảnh hưởng của các tham số
 
 ## Hướng dẫn sử dụng
-### Cài đặt```bash
-pip install numpy matplotlib seaborn pandas tqdm```
-### Chạy thuật toán
-```bashpython main.py
+### Cài đặt
+```bash
+pip install numpy matplotlib seaborn pandas tqdm
 ```
-### Thử nghiệm và so sánh các thuật toán```bash
-python test_algorithm.py```
+### Chạy thuật toán
+```bash
+python main.py
+```
+### Thử nghiệm và so sánh các thuật toán
+```bash
+python test_algorithm.py
+```
 Kết quả sẽ được lưu trong thư mục `results/test_algorithm.csv` và `results/test_summary.csv`
-### Thử nghiệm các tham số```bash
-python test_param.py```
+### Thử nghiệm các tham số
+```bash
+python test_param.py
+```
 Kết quả sẽ được lưu trong thư mục `results/test_param.csv` và các file hội tụ trong `results/convergence/`
-### Vẽ đồ thị hội tụ```bash
-python plot_convergence.py```
+### Vẽ đồ thị hội tụ
+```bash
+python plot_convergence.py
+```
 Đồ thị sẽ được lưu trong thư mục `results/plots/`
 ### Vẽ bản đồ nhiệt```bash
 python plot_heatmap.py```
