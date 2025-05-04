@@ -3,7 +3,7 @@ from local_search import local_search
 from utils import total_weighted_tardiness
 from data import n_jobs
 
-aco = ACO(n_ants=50, iterations=200, beta=3, q0=0.9, evaporation=0.3)
+aco = ACO(n_ants=30, iterations=500, beta=3, q0=0.9, evaporation=0.3)
 
 for it in range(aco.iterations):
     solutions = aco.construct_solution()
