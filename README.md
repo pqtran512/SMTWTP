@@ -46,8 +46,10 @@ Kết quả sẽ được lưu trong thư mục `results/test_param.csv` và cá
 python plot_convergence.py
 ```
 Đồ thị sẽ được lưu trong thư mục `results/plots/`
-### Vẽ bản đồ nhiệt```bash
-python plot_heatmap.py```
+### Vẽ bản đồ nhiệt
+```bash
+python plot_heatmap.py
+```
 Bản đồ nhiệt sẽ được lưu trong thư mục `results/heatmaps/`
 
 ## Kết quả thử nghiệm
