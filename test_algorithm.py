@@ -19,11 +19,14 @@ n_runs = 10
 
 os.makedirs("results", exist_ok=True)
 test_algorithm_file = "results/test_algorithm.csv"
+test_summary_file = "results/test_summary.csv"
 
 # prepare result log header
 with open(test_algorithm_file, "w", newline="") as f:
     writer = csv.writer(f)
     writer.writerow(["method", "run", "best_twt", "runtime"])
+
+summary_rows = []
 
 for method in variants:
     print(f"\n===== Running {method.upper()} for {n_runs} runs =====")
@@ -76,17 +79,19 @@ for method in variants:
     stdTWT[method] = std_twt
     runtimes[method] = total_time / n_runs
 
+    summary_rows.append([method, best, avg_twt, std_twt, round(runtimes[method], 2)])
+
 # === Add Random and Greedy Baselines ===
 random_order = list(range(n_jobs))
 random.shuffle(random_order)
 greedy_order = sorted(range(n_jobs), key=lambda j: jobs[j][1])
 
-print("\n==================== FINAL COMPARISON ====================")
-print(f"{'Method':<30}| {'Best TWT':<12}| {'Avg TWT':<12}| {'Std TWT':<10}| {'Avg Runtime (s)'}")
-print("------------------------------|-------------|-------------|------------|------------------")
-print(f"{'Random order':<30}| {total_weighted_tardiness(random_order):<12}| {'-':<12}| {'-':<10}| {'-'}")
-print(f"{'Greedy (due date)':<30}| {total_weighted_tardiness(greedy_order):<12}| {'-':<12}| {'-':<10}| {'-'}")
-print(f"{'ACO':<30}| {bestTWT['aco']:<12}| {avgTWT['aco']:<12.2f}| {stdTWT['aco']:<10.2f}| {runtimes['aco']:.2f}")
-print(f"{'ACO + Local Search':<30}| {bestTWT['aco_ls']:<12}| {avgTWT['aco_ls']:<12.2f}| {stdTWT['aco_ls']:<10.2f}| {runtimes['aco_ls']:.2f}")
-print(f"{'ACO + Simulated Annealing':<30}| {bestTWT['aco_sa']:<12}| {avgTWT['aco_sa']:<12.2f}| {stdTWT['aco_sa']:<10.2f}| {runtimes['aco_sa']:.2f}")
-print("==========================================================")
+# === Write summary CSV ===
+with open(test_summary_file, "w", newline="") as f:
+    writer = csv.writer(f)
+    writer.writerow(["method", "best_twt", "avg_twt", "std_twt", "avg_runtime"])
+    writer.writerow(["random", total_weighted_tardiness(random_order), "-", "-", "-"])
+    writer.writerow(["greedy", total_weighted_tardiness(greedy_order), "-", "-", "-"])
+    writer.writerows(summary_rows)
+
+print("\n✅ Summary saved to:", test_summary_file)
