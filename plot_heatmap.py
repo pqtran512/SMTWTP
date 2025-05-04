@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import os
 
 # Load result CSV
-csv_path = "results/grid_results.csv"
+csv_path = "results/test_param.csv"
 df = pd.read_csv(csv_path)
 
 # Filter only ACO (exclude LS and GA)
