@@ -4,54 +4,62 @@ from data import n_jobs, jobs
 from utils import calculate_heuristic, total_weighted_tardiness
 
 class ACO:
-    def __init__(self, n_ants=20, iterations=100, beta=3, q0=0.9, evaporation=0.1):
+    def __init__(self, n_ants=20, iterations=100, beta=3, q0=0.9, rho=0.1, tau_min=1e-6, tau_max=5.0):
         self.n_ants = n_ants
         self.iterations = iterations
         self.beta = beta
         self.q0 = q0
-        self.evaporation = evaporation
-        self.pheromone = np.ones((n_jobs, n_jobs))
-        self.heuristic = calculate_heuristic(n_jobs)
+        self.rho = rho
+        self.tau_min = tau_min
+        self.tau_max = tau_max
+        self.tau = np.ones((n_jobs, n_jobs))
+        self.eta = calculate_heuristic(jobs)  # MDD heuristic
         self.best_global = None
         self.best_global_cost = float('inf')
 
     def construct_solution(self):
         solutions = []
-        
+        tau_0 = 1.0
+        xi = 0.1  # online pheromone decay rate
+
         for _ in range(self.n_ants):
-            visited = []
+            visited = set()
+            solution = []
 
-            # chọn ngẫu nhiên 1 job để bắt đầu
-            current = random.randint(0, n_jobs - 1)
-            visited.append(current)
-
-            while len(visited) < n_jobs:
+            for pos in range(n_jobs):
                 candidates = [j for j in range(n_jobs) if j not in visited]
-
-                # tính xác suất chọn job kế tiếp
                 if random.random() < self.q0:
-                    next_job = max(candidates, key=lambda j: self.pheromone[current][j] * self.heuristic[current][j]**self.beta)
+                    # Exploitation
+                    next_job = max(candidates, key=lambda j: self.tau[pos][j] * (self.eta[j] ** self.beta))
                 else:
-                    probs = [self.pheromone[current][j] * self.heuristic[current][j]**self.beta for j in candidates]
+                    # Exploration
+                    probs = [self.tau[pos][j] * (self.eta[j] ** self.beta) for j in candidates]
                     total = sum(probs)
                     probs = [p / total for p in probs]
                     next_job = random.choices(candidates, weights=probs)[0]
 
-                visited.append(next_job)
-                current = next_job
+                solution.append(next_job)
+                visited.add(next_job)
 
-            solutions.append(visited)
-            
+                # Online pheromone update
+                self.tau[pos][next_job] = (1 - xi) * self.tau[pos][next_job] + xi * tau_0
+
+            solutions.append(solution)
+
         return solutions
 
-    def update_pheromone(self, best_solution):
-        self.pheromone *= (1 - self.evaporation)
+    def update_pheromone(self, solutions, k=5):
+        self.tau *= (1 - self.rho)
 
-        cost = total_weighted_tardiness(best_solution)
-        if cost == 0:
-            cost = 1e-6  # tránh chia cho 0
+        # cập nhật pheromone từ top-k solutions 
+        top_k = sorted(solutions, key=total_weighted_tardiness)[:k]
+        for sol in top_k:
+            cost = total_weighted_tardiness(sol)
+            if cost == 0:
+                cost = 1e-6  # tránh chia cho 0
+            for pos, job in enumerate(sol):
+                self.tau[pos][job] += 1.0 / cost
 
-        for i in range(n_jobs - 1):
-            a = best_solution[i]
-            b = best_solution[i + 1]
-            self.pheromone[a][b] += 1.0 / cost
+        # dynamic pheromone bounds
+        self.tau_max = 1.0 / ((1 - self.rho) * self.best_global_cost)
+        self.tau = np.clip(self.tau, self.tau_min, self.tau_max)

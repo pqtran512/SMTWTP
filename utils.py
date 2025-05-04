@@ -1,3 +1,4 @@
+import numpy as np
 from data import jobs
 
 def total_weighted_tardiness(order):
@@ -12,12 +13,6 @@ def total_weighted_tardiness(order):
 
     return twt
 
-def calculate_heuristic(n_jobs):
+def calculate_heuristic(jobs):
     import numpy as np
-
-    heuristic = np.zeros((n_jobs, n_jobs))
-    for i in range(n_jobs):
-        for j in range(n_jobs):
-            if i != j:
-                heuristic[i][j] = 1 / (jobs[j][1] + 1e-6)
-    return heuristic
+    return np.array([1.0 / (d + 1e-6) for _, d, _ in jobs])
